@@ -13,14 +13,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChatApp"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Activities.SignUpActivity"></activity>
-        <activity android:name=".Activities.ChatActivity" />
-        <activity android:name=".Activities.LoginActivity">
+        <activity android:name=".Activities.SignUpActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".Activities.ChatActivity" />
+        <activity android:name=".Activities.LoginActivity">
+
         </activity>
         <activity android:name=".Activities.MainActivity"></activity>
     </application>

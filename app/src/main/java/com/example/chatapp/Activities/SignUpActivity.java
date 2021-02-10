@@ -43,6 +43,9 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         initViews();
         checkToken(); //checks if user is already logged in, if token is available than user is already logged in
 
+        mSignUpBtn.setOnClickListener(this);
+        mLoginBtn.setOnClickListener(this);
+
     }
 
     private void checkToken() {
@@ -55,7 +58,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
     private void goToMainActivity() {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class  );
-
+        startActivity(intent);
     }
 
     private void initViews() {
@@ -94,6 +97,9 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
         User user = new User();
         user.setName(mName.getText().toString());
+        user.setEmail(mEmail.getText().toString());
+        user.setPassword(mPassword.getText().toString());
+        user.setUsername(mUsername.getText().toString());
         Call<UserAndToken> call = userApi.createUser(user);
         call.enqueue(new Callback<UserAndToken>() {
             @Override
@@ -119,7 +125,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
             @Override
             public void onFailure(Call<UserAndToken> call, Throwable t) {
-
+                makeToast(t.getMessage());
             }
         });
 

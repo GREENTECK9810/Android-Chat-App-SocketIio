@@ -43,6 +43,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Retrofit retrofit = retrofitClient.getRetrofit();
         userApi = retrofit.create(UserApi.class);
 
+        mLogin.setOnClickListener(this);
+
     }
 
     private void login() {

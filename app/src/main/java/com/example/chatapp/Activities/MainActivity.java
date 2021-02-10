@@ -3,7 +3,9 @@ package com.example.chatapp.Activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.ConditionVariable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 
 import com.example.chatapp.Api.UserApi;
 import com.example.chatapp.ChatApplication;
+import com.example.chatapp.Constant;
 import com.example.chatapp.R;
 import com.example.chatapp.RetrofitClient;
 import com.example.chatapp.model.User;
@@ -31,9 +34,9 @@ public class MainActivity extends AppCompatActivity {
     EditText mSearch;
     TextView mUsername;
     Button mSearchBtn, mChatButton;
-    String token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwMWVkNjU3OTg0ZDIyMjA5ODYxMjIxOCIsImlhdCI6MTYxMjYzNDcxM30.0qsWf9EHsA1w477MU2P9F-Z6BB71GGuQ0rTHjRajWIU";
     UserApi userApi;
     private Socket mSocket;
+    SharedPreferences sharedPreferences;
 
 
 
@@ -41,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        sharedPreferences = getSharedPreferences(Constant.PREFS_NAME, MODE_PRIVATE);
+
 
         //init views
         mSearch = findViewById(R.id.search);
@@ -50,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
         //connect socket
         ChatApplication application = (ChatApplication) getApplication();
-        application.initSocket(getIntent().getStringExtra("username"));
+        application.initSocket(sharedPreferences.getString(Constant.USER_NAME, "null"));
         mSocket = application.getSocket();
         initSocketEvents();
 
@@ -100,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void getUser() {
 
-        Call<User> call = userApi.user(mSearch.getText().toString(), getIntent().getStringExtra("token")  );
+        Call<User> call = userApi.user(mSearch.getText().toString(), sharedPreferences.getString(Constant.TOKEN, "null")  );
 
         call.enqueue(new Callback<User>() {
             @Override
@@ -113,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 mUsername.setText(response.body().getUsername());
                 Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
                 intent.putExtra("to",response.body().getUsername());
-                intent.putExtra("from", getIntent().getStringExtra("username")  );
+                intent.putExtra("from", sharedPreferences.getString(Constant.USER_NAME, "null")  );
                 startActivity(intent);
 
             }
