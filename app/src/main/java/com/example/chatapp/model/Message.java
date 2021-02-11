@@ -2,7 +2,24 @@ package com.example.chatapp.model;
 
 public class Message {
 
-    String message, from, to;
+    String message, from, to, position;
+    boolean isSender;
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    public boolean isSender() {
+        return isSender;
+    }
+
+    public void setSender(boolean sender) {
+        isSender = sender;
+    }
 
     public String getFrom() {
         return from;

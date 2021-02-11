@@ -79,8 +79,24 @@ public class ChatActivity extends AppCompatActivity {
 
             mSocket.emit("private message", obj);
             Message message = new Message();
-            message.setFrom(getIntent().getStringExtra("from"));
+            message.setSender(true);
             message.setMessage(mMessageText.getText().toString());
+            if (messageList.size() >= 1){
+                if (messageList.get(messageList.size()-1).isSender()){
+                    message.setPosition("last");
+                    if(messageList.get(messageList.size()-1).getPosition() == "single"){
+                        messageList.get(messageList.size()-1).setPosition("first");
+                    }
+                    if(messageList.get(messageList.size()-1).getPosition() == "last"){
+                        messageList.get(messageList.size()-1).setPosition("middle");
+                    }
+                }else {
+                    message.setPosition("single");
+                }
+            }else {
+                message.setPosition("single");
+            }
+
             messageList.add(message);
             mChatAdapter.notifyDataSetChanged();
             mMessageText.setText("");
@@ -122,7 +138,24 @@ public class ChatActivity extends AppCompatActivity {
                     Toast.makeText(ChatActivity.this, message, Toast.LENGTH_SHORT).show();
                     Message message1 = new Message();
                     message1.setMessage(message);
-                    message1.setFrom(username);
+                    message1.setSender(false);
+
+                    if (messageList.size() >= 1){
+                        if (!messageList.get(messageList.size()-1).isSender()){
+                            message1.setPosition("last");
+                            if(messageList.get(messageList.size()-1).getPosition() == "single"){
+                                messageList.get(messageList.size()-1).setPosition("first");
+                            }
+                            if(messageList.get(messageList.size()-1).getPosition() == "last"){
+                                messageList.get(messageList.size()-1).setPosition("middle");
+                            }
+                        }else {
+                            message1.setPosition("single");
+                        }
+                    }else {
+                        message1.setPosition("single");
+                    }
+
                     messageList.add(message1);
                     mChatAdapter.notifyDataSetChanged();
 

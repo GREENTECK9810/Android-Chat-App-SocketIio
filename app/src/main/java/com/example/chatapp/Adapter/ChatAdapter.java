@@ -13,7 +13,6 @@ import com.example.chatapp.R;
 import com.example.chatapp.model.Message;
 
 import java.util.List;
-import java.util.zip.Inflater;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
 
@@ -38,9 +37,58 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
 
         Message message = messageList.get(position);
 
-        holder.username.setText(message.getFrom());
-        holder.message.setText(message.getMessage());
+        switch (message.getPosition()){
+            case "single":
+                if (message.isSender()){
+                    holder.sendMessage.setText(message.getMessage());
+                    setVisibility(holder.sendMessage, holder);
+                }else {
+                    holder.receiveMessage.setText(message.getMessage());
+                    setVisibility(holder.receiveMessage, holder);
+                }
+                break;
+            case "first":
+                if (message.isSender()){
+                    holder.sendMessageFirst.setText(message.getMessage());
+                    setVisibility(holder.sendMessageFirst, holder);
+                }else {
+                    holder.receiveMessageFirst.setText(message.getMessage());
+                    setVisibility(holder.receiveMessageFirst, holder);
+                }
+                break;
+            case "middle":
+                if (message.isSender()){
+                    holder.sendMessageMiddle.setText(message.getMessage());
+                    setVisibility(holder.sendMessageMiddle, holder);
+                }else {
+                    holder.receiveMessageMiddle.setText(message.getMessage());
+                    setVisibility(holder.receiveMessageMiddle, holder);
+                }
+                break;
+            case "last":
+                if (message.isSender()){
+                    holder.sendMessageLast.setText(message.getMessage());
+                    setVisibility(holder.sendMessageLast, holder);
+                }else {
+                    holder.receiveMessageLast.setText(message.getMessage());
+                    setVisibility(holder.receiveMessageLast, holder);
+                }
+                break;
+        }
 
+    }
+
+    private void setVisibility(TextView view, ViewHolder holder) {
+        holder.sendMessage.setVisibility(View.GONE);
+        holder.sendMessageFirst.setVisibility(View.GONE);
+        holder.sendMessageLast.setVisibility(View.GONE);
+        holder.sendMessageMiddle.setVisibility(View.GONE);
+        holder.receiveMessage.setVisibility(View.GONE);
+        holder.receiveMessageFirst.setVisibility(View.GONE);
+        holder.receiveMessageMiddle.setVisibility(View.GONE);
+        holder.receiveMessageLast.setVisibility(View.GONE);
+
+        view.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -50,13 +98,20 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView username, message;
+        private TextView sendMessage, sendMessageFirst, sendMessageMiddle, sendMessageLast,
+                         receiveMessage, receiveMessageFirst, receiveMessageMiddle, receiveMessageLast;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            username = (TextView) itemView.findViewById(R.id.username);
-            message = (TextView) itemView.findViewById(R.id.message);
+            sendMessage = (TextView) itemView.findViewById(R.id.send_message);
+            sendMessageFirst = (TextView) itemView.findViewById(R.id.send_message_first);
+            sendMessageMiddle = (TextView) itemView.findViewById(R.id.send_message_middle);
+            sendMessageLast = (TextView) itemView.findViewById(R.id.send_message_last);
+            receiveMessage = (TextView) itemView.findViewById(R.id.recieve_message);
+            receiveMessageFirst = (TextView) itemView.findViewById(R.id.recieve_message_first);
+            receiveMessageMiddle = (TextView) itemView.findViewById(R.id.recieve_message_middle);
+            receiveMessageLast = (TextView) itemView.findViewById(R.id.recieve_message_last);
 
 
         }
