@@ -2,7 +2,15 @@ package com.example.chatapp.model;
 
 public class User {
 
-    String username, email, password, name;
+    String username, email, password, name, firebaseToken;
+
+    public String getFirebaseToken() {
+        return firebaseToken;
+    }
+
+    public void setFirebaseToken(String firebaseToken) {
+        this.firebaseToken = firebaseToken;
+    }
 
     public String getName() {
         return name;

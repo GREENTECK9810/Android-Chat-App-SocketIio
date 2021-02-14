@@ -22,4 +22,6 @@ public interface UserApi {
     @POST("users")
     Call<UserAndToken> createUser(@Body User user);
 
+    @GET("users/firebasetoken")
+    Call<Void> setFirebaseToken(@Query("firebaseToken") String firebaseToken, @Header("Authorization") String token);
 }

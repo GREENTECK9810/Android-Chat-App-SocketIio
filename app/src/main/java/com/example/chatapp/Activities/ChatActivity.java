@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.EventLog;
@@ -16,10 +18,16 @@ import android.widget.Toast;
 
 import com.example.chatapp.Adapter.ChatAdapter;
 import com.example.chatapp.ChatApplication;
+import com.example.chatapp.Constant;
+import com.example.chatapp.PushNotification.NotificationApi;
+import com.example.chatapp.PushNotification.NotificationData;
+import com.example.chatapp.PushNotification.PushNotificationData;
 import com.example.chatapp.R;
 import com.example.chatapp.model.Message;
 import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.Ack;
 import com.github.nkzawa.socketio.client.Socket;
+import com.squareup.okhttp.ResponseBody;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,6 +35,12 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ChatActivity extends AppCompatActivity {
     private static final String TAG = "CHAT ACTIVITY";
@@ -77,7 +91,30 @@ public class ChatActivity extends AppCompatActivity {
             obj.put("to", getIntent().getStringExtra("to"));
             obj.put("message", mMessageText.getText().toString());
 
-            mSocket.emit("private message", obj);
+            mSocket.emit("private message", obj, new Ack() {
+                @Override
+                public void call(Object... args) {
+                    JSONObject data = (JSONObject) args[0];
+                    String status = "";
+                    String token = "";
+                    String message = "";
+                    try {
+                         status = data.getString("status");
+                         token = data.getString("token");
+                         message = data.getString("message");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    Log.d(TAG, "Ack : " + status);
+                    if (status.equals("offline")){
+                        sendPushNotification(message, token);
+                    }
+
+                }
+            });
+
+
             Message message = new Message();
             message.setSender(true);
             message.setMessage(mMessageText.getText().toString());
@@ -116,6 +153,39 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
+
+    private void sendPushNotification(String message, String token) {
+        SharedPreferences sharedPreferences = getSharedPreferences(Constant.PREFS_NAME, MODE_PRIVATE    );
+
+        NotificationData notificationData = new NotificationData();
+        notificationData.setTitle(sharedPreferences.getString(Constant.USER_NAME, "someone"));
+        notificationData.setMessage(message);
+
+        PushNotificationData pushNotificationData = new PushNotificationData();
+        pushNotificationData.setData(notificationData);
+        pushNotificationData.setTo(token);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://fcm.googleapis.com")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        Call<PushNotificationData> call = retrofit.create(NotificationApi.class).pushNotification(pushNotificationData);
+        call.enqueue(new Callback<PushNotificationData>() {
+            @Override
+            public void onResponse(Call<PushNotificationData> call, Response<PushNotificationData> response) {
+                if (!response.isSuccessful()){
+                    Log.e(TAG, "Notification unsuccessful " + response );
+                    return;
+                }
+                Log.d(TAG, "Notification successful");
+            }
+
+            @Override
+            public void onFailure(Call<PushNotificationData> call, Throwable t) {
+                Log.e(TAG, "onFailure: " + t.getMessage() );
+            }
+        });
+    }
 
 
     Emitter.Listener onPrivateMessage = new Emitter.Listener() {
