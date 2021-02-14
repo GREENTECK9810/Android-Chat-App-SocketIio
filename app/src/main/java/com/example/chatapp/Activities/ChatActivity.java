@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -23,6 +24,7 @@ import com.example.chatapp.PushNotification.NotificationApi;
 import com.example.chatapp.PushNotification.NotificationData;
 import com.example.chatapp.PushNotification.PushNotificationData;
 import com.example.chatapp.R;
+import com.example.chatapp.Services.MessageService;
 import com.example.chatapp.model.Message;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Ack;
@@ -31,7 +33,6 @@ import com.squareup.okhttp.ResponseBody;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +81,10 @@ public class ChatActivity extends AppCompatActivity {
                 attemptSend();
             }
         });
+
+        Intent intent = new Intent(getApplicationContext(), MessageService.class);
+        intent.putExtra("status", true);
+        startService(intent);
 
     }
 
@@ -205,7 +210,6 @@ public class ChatActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    Toast.makeText(ChatActivity.this, message, Toast.LENGTH_SHORT).show();
                     Message message1 = new Message();
                     message1.setMessage(message);
                     message1.setSender(false);
@@ -234,4 +238,44 @@ public class ChatActivity extends AppCompatActivity {
             });
         }
     };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = new Intent(getApplicationContext(), MessageService.class);
+        intent.putExtra("status", true);
+        startService(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Intent intent = new Intent(getApplicationContext(), MessageService.class);
+        intent.putExtra("status", true);
+        startService(intent);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Intent intent = new Intent(getApplicationContext(), MessageService.class);
+        intent.putExtra("status", false);
+        startService(intent);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Intent intent = new Intent(getApplicationContext(), MessageService.class);
+        intent.putExtra("status", false);
+        startService(intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Intent intent = new Intent(getApplicationContext(), MessageService.class);
+        intent.putExtra("status", false);
+        startService(intent);
+    }
 }

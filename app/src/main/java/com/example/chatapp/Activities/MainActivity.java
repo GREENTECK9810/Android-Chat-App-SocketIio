@@ -17,6 +17,8 @@ import com.example.chatapp.ChatApplication;
 import com.example.chatapp.Constant;
 import com.example.chatapp.R;
 import com.example.chatapp.RetrofitClient;
+import com.example.chatapp.Services.MessageService;
+import com.example.chatapp.model.Message;
 import com.example.chatapp.model.User;
 import com.github.nkzawa.emitter.Emitter;
 
@@ -71,6 +73,10 @@ public class MainActivity extends AppCompatActivity {
         userApi = retrofit.create(UserApi.class);
 
         sendFirebaseTokenToServer();
+
+        //start message service
+        Intent intent = new Intent(getApplicationContext(), MessageService.class);
+        startService(intent);
 
         mSearchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        stopService(new Intent(getApplicationContext(), MessageService.class));
         mSocket.disconnect();
         mSocket.off("private message");
         mSocket.off(Socket.EVENT_CONNECT, onConnect);
