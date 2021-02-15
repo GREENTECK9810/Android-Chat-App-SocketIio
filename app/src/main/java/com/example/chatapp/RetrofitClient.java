@@ -10,7 +10,7 @@ public class RetrofitClient extends Application {
     private Retrofit retrofit;
     {
         retrofit = new Retrofit.Builder()
-                        .baseUrl("http://10.0.2.2:3000/")
+                        .baseUrl(Constant.BASE_URL)
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
     }

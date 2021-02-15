@@ -9,20 +9,13 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chat_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/message_send_view"/>
+        android:layout_height="match_parent" />
 
-    <LinearLayout
-        android:id="@+id/message_send_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true"
-        android:weightSum="10">
+
 
         <EditText
             android:id="@+id/message_text"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/message_input_shape"
             android:layout_marginLeft="16dp"
@@ -30,22 +23,22 @@
             android:layout_marginTop="16dp"
             android:hint="Type here"
             android:padding="16dp"
-            android:layout_weight="9"/>
+            android:layout_toLeftOf="@+id/send"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"/>
 
         <ImageView
             android:id="@+id/send"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_baseline_send_24"
-            android:backgroundTint="#87ceeb"
-            android:layout_margin="16dp"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"/>
-
-    </LinearLayout>
-
-
-
+            android:src="@drawable/ic_baseline_send_24"
+            android:background="?selectableItemBackgroundBorderless"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="16dp"
+            android:padding="16dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            app:tint="@color/blue" />
 
 
 

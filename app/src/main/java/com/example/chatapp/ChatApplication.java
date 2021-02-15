@@ -19,7 +19,7 @@ public class ChatApplication extends RetrofitClient {
         try {
             IO.Options mOptions = new IO.Options();
             mOptions.query = "username=" + username;
-            mSocket = IO.socket("http://10.0.2.2:3000", mOptions);
+            mSocket = IO.socket(Constant.BASE_URL, mOptions);
 
             mSocket.connect();
 
